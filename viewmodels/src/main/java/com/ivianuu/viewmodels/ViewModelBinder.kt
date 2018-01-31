@@ -22,7 +22,7 @@ import android.support.v4.app.FragmentActivity
 /**
  * A binder for [ViewModel]'s
  */
-class ViewModelBinder<out VM : ViewModel> private constructor(
+class ViewModelBinder<VM : ViewModel> private constructor(
     private val store: ViewModelStore,
     private val factory: Factory<VM>,
     private val key: Any
@@ -45,7 +45,7 @@ class ViewModelBinder<out VM : ViewModel> private constructor(
     /**
      * A factory for [ViewModel]
      */
-    interface Factory<out VM : ViewModel> {
+    interface Factory<VM : ViewModel> {
 
         /**
          * Returns a new [ViewModel]
