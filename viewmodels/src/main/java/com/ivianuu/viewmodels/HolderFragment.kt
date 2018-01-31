@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentManager
 
 /**
  * Holds a [ViewModelStore] for a [Activity] or [Fragment] until it gets destroyed
+ * This class is internal and you should not worry about it
  */
 class HolderFragment : Fragment() {
 
@@ -70,18 +71,6 @@ class HolderFragment : Fragment() {
             }
         }
 
-        private fun holderFragmentCreated(holderFragment: Fragment) {
-            val parentFragment = holderFragment.parentFragment
-            if (parentFragment != null) {
-                notCommittedFragmentHolders.remove(parentFragment)
-                parentFragment.fragmentManager?.unregisterFragmentLifecycleCallbacks(
-                    mParentDestroyedCallback
-                )
-            } else {
-                holderFragment.activity?.let { notCommittedActivityHolders.remove(it) }
-            }
-        }
-
         internal fun holderFragmentFor(activity: FragmentActivity): HolderFragment {
             var holder = notCommittedActivityHolders[activity]
             if (holder != null) {
@@ -124,6 +113,18 @@ class HolderFragment : Fragment() {
             notCommittedFragmentHolders[fragment] = holder
 
             return holder
+        }
+
+        private fun holderFragmentCreated(holderFragment: Fragment) {
+            val parentFragment = holderFragment.parentFragment
+            if (parentFragment != null) {
+                notCommittedFragmentHolders.remove(parentFragment)
+                parentFragment.fragmentManager?.unregisterFragmentLifecycleCallbacks(
+                    mParentDestroyedCallback
+                )
+            } else {
+                holderFragment.activity?.let { notCommittedActivityHolders.remove(it) }
+            }
         }
 
         private fun createHolderFragment(fragmentManager: FragmentManager): HolderFragment {

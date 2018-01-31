@@ -20,7 +20,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 
 /**
- * A provider for [ViewModel]'s
+ * A binder for [ViewModel]'s
  */
 class ViewModelBinder<out VM : ViewModel> private constructor(
     private val store: ViewModelStore,
@@ -28,6 +28,9 @@ class ViewModelBinder<out VM : ViewModel> private constructor(
     private val key: Any
 ) {
 
+    /**
+     * Returns either a fresh or a retained [ViewModel]
+     */
     @Suppress("UNCHECKED_CAST")
     fun get() : VM {
         var viewModel = store[key]
@@ -39,14 +42,26 @@ class ViewModelBinder<out VM : ViewModel> private constructor(
         return viewModel as VM
     }
 
+    /**
+     * A factory for [ViewModel]
+     */
     interface Factory<out VM : ViewModel> {
 
+        /**
+         * Returns a new [ViewModel]
+         */
         fun create(): VM
 
     }
 
     companion object {
 
+        /**
+         * Returns a [ViewModelBinder] for the [activity]
+         * The [key] must be unique in the [activity]
+         */
+        @JvmStatic
+        @JvmOverloads
         fun <VM : ViewModel> of(activity: FragmentActivity,
                                 factory: Factory<VM>,
                                 key: Any = activity::class.java.canonicalName) : ViewModelBinder<VM> {
@@ -57,6 +72,12 @@ class ViewModelBinder<out VM : ViewModel> private constructor(
             )
         }
 
+        /**
+         * Returns a [ViewModelBinder] for the [fragment]
+         * The [key] must be unique in the [fragment]
+         */
+        @JvmStatic
+        @JvmOverloads
         fun <VM : ViewModel> of(fragment: Fragment,
                                 factory: Factory<VM>,
                                 key: Any = fragment::class.java.canonicalName) : ViewModelBinder<VM> {
@@ -65,6 +86,28 @@ class ViewModelBinder<out VM : ViewModel> private constructor(
                 factory = factory,
                 key = key
             )
+        }
+
+        /**
+         * A shortcut to directly retrieve the [ViewModel]
+         */
+        @JvmStatic
+        @JvmOverloads
+        fun <VM : ViewModel> get(activity: FragmentActivity,
+                                 factory: Factory<VM>,
+                                 key: Any = activity::class.java.canonicalName) : VM {
+            return of(activity, factory, key).get()
+        }
+
+        /**
+         * A shortcut to directly retrieve the [ViewModel]
+         */
+        @JvmStatic
+        @JvmOverloads
+        fun <VM : ViewModel> get(fragment: Fragment,
+                                 factory: Factory<VM>,
+                                 key: Any = fragment::class.java.canonicalName) : VM {
+            return of(fragment, factory, key).get()
         }
     }
 }

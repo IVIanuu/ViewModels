@@ -17,7 +17,7 @@
 package com.ivianuu.viewmodels
 
 /**
- * Basic contract of an view model
+ * Basic view model
  */
 open class ViewModel {
 

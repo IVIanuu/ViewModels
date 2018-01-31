@@ -17,7 +17,7 @@
 package com.ivianuu.viewmodels
 
 /**
- * Class to store [ViewModel]'s
+ * Stores [ViewModel]'S
  */
 class ViewModelStore {
 
